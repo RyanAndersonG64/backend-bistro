@@ -19,7 +19,7 @@ class CustomerSerializer(serializers.ModelSerializer):
 class CustomerOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerOrder
-        fields = ['id', 'customer', 'item', 'quantity', 'dine_in', 'pickup_time', 'paid', 'complete']
+        fields = ['id', 'customer', 'dine_in', 'pickup_time', 'paid', 'complete']
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
