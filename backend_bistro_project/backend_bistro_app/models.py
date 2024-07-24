@@ -32,24 +32,25 @@ class Customer(models.Model):
 
 class CustomerOrder(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    dine_in = models.BooleanField(default=True)
+    dine_in = models.BooleanField(default=False)
     pickup_time = models.TimeField()
-    order_item_2 = models.ManyToManyField(MenuItem, through='OrderItem')
     paid = models.BooleanField(default=False)
     complete = models.BooleanField(default=False)
+    dine_status = models.TextField()
 
-    dine_status = 'Dine in'    
-    if dine_in == False:
-        dine_status = f'Takeout - {pickup_time}'
 
     def __str__(self):
+        if self.dine_in == True:
+            self.dine_status = 'Dine in'    
+        elif self.dine_in == False:
+            self.dine_status = f'Takeout - {self.pickup_time}'
         return f'{self.customer} - {self.dine_status}'
 
 
 class OrderItem(models.Model):
-    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name='menu_item')
     quantity = models.SmallIntegerField(default=0)
     customer_order = models.ForeignKey(CustomerOrder, on_delete=models.CASCADE, related_name='order_item')
 
     def __str__(self):
-        return f'{self.quantity} orders of {self.item}'
+        return f'{self.quantity} orders of {self.item.item}'

@@ -4,25 +4,33 @@ from .models import *
 class AllergenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Allergen
-        fields = ['id', 'name']
+        fields = '__all__'
 
 class MenuItemSerializer(serializers.ModelSerializer):
     allergens = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = MenuItem
-        fields = ['id', 'item', 'category', 'spice', 'allergens']
+        fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'name', 'address', 'phone_number']
+        fields = '__all__'
 
 class CustomerOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerOrder
-        fields = ['id', 'customer', 'dine_in', 'pickup_time', 'order_item_2', 'paid', 'complete']
+        fields = '__all__'
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    menu_item = serializers.CharField(source = 'item.item', read_only = True)
+    item = serializers.PrimaryKeyRelatedField(queryset=MenuItem.objects.all())
+
     class Meta:
         model = OrderItem
-        fields = ['id', 'item', 'quantity', 'customer_order']
+        fields = fields = ['id', 'item', 'menu_item', 'quantity', 'customer_order']
+
+        def to_representation(self, instance):
+            ret = super().to_representation(instance)
+            ret['item'] = instance.item.name  # Replace the ID with the name in the representation
+            return ret
