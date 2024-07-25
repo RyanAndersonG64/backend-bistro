@@ -29,5 +29,6 @@ router.register(r'customerOrders', CustomerOrderViewSet)
 router.register(r'orderitems', OrderItemViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('check-out', check_out)
 ]
